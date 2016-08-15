@@ -36,7 +36,7 @@ $(function(){
 	// INITIAL AJAX CALL FOR CAR DATA
 	var request = {
 			fmt: 'json',
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+			api_key: 'XXXXX'
 		};
 	// Ajax Call to Edmunds.com API	
 	$.ajax({
@@ -145,7 +145,7 @@ $(function(){
 		
 		var request = {
 			fmt: 'json',
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'			
+			api_key: 'XXX'			
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
@@ -204,7 +204,7 @@ $(function(){
 			styleId: Id,
 			fmt: 'json',
 			comparator: 'simple' ,			
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+			api_key: 'XXX'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
@@ -300,7 +300,7 @@ $(function(){
 			mileage: mileage,
 			zip: zip,
 			fmt: 'json',
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+			api_key: 'XXX'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
