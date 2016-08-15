@@ -14,7 +14,9 @@ $(function(){
 
 	// SlideShow
 	var slideIndex = 0;
-	var urlIds = [];
+	// var urlIds = [];
+	var carouselIndex = 0;
+	var timer;
 	// End Slideshow
 
 	// GET CAR DATA FROM LOCAL STORAGE
@@ -22,7 +24,20 @@ $(function(){
 		var cars = JSON.parse(window.localStorage.getItem('cars'));
 		return cars;
 	};
-
+	var getPhotoData = function(){
+		var photos = JSON.parse(window.localStorage.getItem('photos'));
+		return photos;
+	}
+	
+	// var getImgData = function getImgArray(result){
+	// 	result.forEach(function(element) {
+	// 		element.photoSrcs.forEach(function(src) {
+	// 			if (src.substring(src.length - 8) === '_500.jpg') {
+	// 				urlIds.push(src);
+	// 			}
+	// 		}, this);
+	// 	}, this);
+	// }
 	// GET CAR STYLE DATA FROM LOCAL STORAGE
 	var getStyleData = function(){
 		var styles = JSON.parse(window.localStorage.getItem('styles'));
@@ -36,7 +51,7 @@ $(function(){
 	// INITIAL AJAX CALL FOR CAR DATA
 	var request = {
 			fmt: 'json',
-			api_key: 'XXXXX'
+			api_key: 'XXX'
 		};
 	// Ajax Call to Edmunds.com API	
 	$.ajax({
@@ -63,6 +78,9 @@ $(function(){
 	
 	// SELECT MAKE
 	$('#make').change(function(){
+    	var stop = true;
+		console.log('calling stop');
+		carousel(stop);
 
 		$('.warning').slideUp(200);
 		// Removes previous car models & years if a make had been previously selected 
@@ -125,7 +143,6 @@ $(function(){
 		var carMake = makeSelection();
 		var carModel = modelSelection();
 		var carYear = yearSelection();
-		
 		if (carMake === "Select Make" || carModel === "Select Model" || carYear === "Select Year") {
 			// If user doesn't select a make, model or year
 			$('.warning').slideDown(200);
@@ -137,7 +154,7 @@ $(function(){
 			var model = carData.makes[carMake].models[carModel].niceName;
 			var year = carData.makes[carMake].models[carModel].years[carYear].year;
 			getCarStyles(make, model, year);
-		}	
+		}
 	});	
 
 	// AJAX CALL TO GET STYLES OF CAR SELECTED
@@ -191,7 +208,14 @@ $(function(){
 		var styleId = carStyles.styles[style].id;
 		console.log(styleId);
 		// Get image of car selected
+		// urlIds = [];
 		getCarPic(styleId);
+		fillElements();
+		carousel();
+		// clearInterval(timer);
+		// timer = null;
+		// fillInElements();
+		// timer = carousel();
 	});
 
 	// AJAX CALL TO GET PICTURE OF CAR SELECTED
@@ -212,63 +236,63 @@ $(function(){
 			data: request,
 			dataType: "json",
 			type: "GET",
-			// success: function(msg){
-			// 		alert( "Data Saved: " + msg );
-			// },
-			// error: function(XMLHttpRequest, textStatus, errorThrown) {
-			// 	alert("XHR:\r\n" + XMLHttpRequest + "Error:\r\n" + errorThrown + "\r\n Status:\r\n" + textStatus);
-			// }
 		})
 		.done(function(result){
 			console.log(result);
-			getImgArray(result);
-			fillInElements();
-			// var url = result[0].id;
-			// var imgUrl = url.slice(9);
-			// Show car img and appraisal details		
-			// $('#car-image').attr('src', 'http://media.ed.edmunds-media.com' + imgUrl + '_500.jpg');
-			// console.log('#car-image load function');
-			// $('#car-image').load(function(){
+			console.log('filling image array');
+			var photosData = [];
+			result.forEach(function(element) {
+				element.photoSrcs.forEach(function(src) {
+					if (src.substring(src.length - 8) === '_500.jpg') {
+						photosData.push(src);
+					}
+				}, this);
+			}, this);
+			var photoData = JSON.stringify(photosData);
+			window.localStorage.setItem('photos', photoData);
+			$('.mySlides').load(function(){
+				console.log('CarouselIndex: ' + carouselIndex);
 				$('.gif, .gif-background').fadeOut(500);
 				$('.car-result').slideDown(500);
-			// 	$('html, body').animate({scrollTop: $('#car-image').offset().top }, 1000);			
-			// });
-			carousel();
+				// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
+			});
 		});
 	};
-	// carousel();
 	
 	//Slideshow
-	function getImgArray(result){
-		result.forEach(function(element) {
-			// urlIds.push(element.id);
-			element.photoSrcs.forEach(function(src) {
-				urlIds.push(src);
-			}, this);
-		}, this);
-	}
-	function fillInElements()
+	var fillElements = function()
 	{
 		var i;
 		var x = document.getElementsByClassName("mySlides");
+		var photoData = JSON.parse(window.localStorage.getItem('photos'));
+		console.log(photoData.length);
 		for (i = 0; i < x.length; i++) {
-			// x[i].style.display  = "none"; 
-			console.log(x[i]);
-			x[i].src = 'http://media.ed.edmunds-media.com' + urlIds[i];
+			if (carouselIndex > photoData.length - 1){
+				carouselIndex = 0;
+			}
+			x[i].src = 'http://media.ed.edmunds-media.com' + photoData[carouselIndex];
+			carouselIndex++
 		}
 	}
-	function carousel() {
-		var i;
-		var x = document.getElementsByClassName("mySlides");
-		for (i = 0; i < x.length; i++) {
-		x[i].style.display  = "none"; 
+	var carousel = function(stop) {
+		console.log("Exit: " + stop);
+		if (stop){
+			return clearTimeout();
+		}else{
+			console.log(carouselIndex);
+			var i;
+			var x = document.getElementsByClassName("mySlides");
+			for (i = 0; i < x.length; i++) {
+				x[i].style.display  = "none"; 
+			}
+			slideIndex++;
+			if (slideIndex > x.length) {
+				slideIndex = 1;
+				fillElements();
+			} 
+			x[slideIndex-1].style.display = "block"; 
+			return setTimeout(carousel, 3000); // Change image every 2 seconds			
 		}
-		slideIndex++;
-		if (slideIndex > x.length) {
-			slideIndex = 1;
-		} 
-		x[slideIndex-1].style.display = "block"; 
-		setTimeout(carousel,  2000); // Change image every 2 seconds
 	}
 	//slideshow
 	
