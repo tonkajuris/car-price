@@ -1,0 +1,59 @@
+Git Notes
+git init -> initialze git repository here
+git status -> check status
+git add octocat.txt -> add file
+git status 
+git commit -m "Add cute octocat story" -> add new file with comment
+git add '*.txt' -> add all files and directories
+git commit -m 'Add all the octocat txt files'  -> commit all files to repository
+git log -> see the log of what we've done so far.
+git remote add origin https://github.com/try-git/try_git.git  -> adds local repository to GitHub repository
+git push -u origin master -> name of remote is origin and local branch name is master -u tells git to remember parameters so can use git push next time
+git pull origin master -> time passes... check for other users checkins by using this command
+git diff Head -> check what is different  another use for diff is looking what changes within files.
+git add octofamily/octodog.txt -> stage new file
+git diff --staged -> see changes you just staged
+git reset octofamily/octodog.txt -> unstage files
+git checkout -- octocat.txt  -> change files back to how they were at last commit using this command
+git branch clean_up -> create new branch to cleanup cats files.
+git checkout clean_up -> checkout and move to new branch
+git rm '*.txt' -> delete all the cats
+git checkout master  -> check out master branch to perform merge
+git merge clean_up  -> merge to master branch
+git branch -d cleanup   -> Delete the branch
+git push -> push everything to remote repository
+git reset 
+git add <file>
+git commit --amend -m "Modify readme and add todo.txt"  -> Change the last commit
+git reset --soft HEAD^ -> Undo last commit, put changes into staging.
+git status
+git reset --hard HEAD^ -> undo last commit and all changes
+git reset --hard HEAD^^ -> Undo last 2 commit and all changes
+< Git doesn't take care of access control for you >  ie GitHub BitBucket
+git remote add origin https://github.com/<MyRepo?git-real.git -> New Remote
+git remote add <name> <address>
+git remote -v -> Show remote repositiories
+git push -u origin master -> repo name and branch name -u is for username  <<Password Hashing>>  https://help.github.com/articles/set-up-git
+git pull -> get changes from remote
+git remote rm <name>
+git remote rm <name> -> removes remotes
+git push -u <name> <branch> -> -u sets the username so you don't have to keep entering user name
+
+Files can be changed back to how they were at the last commit by using the command: git checkout -- <target>. Go ahead and get rid of all the changes since the last commit for octocat.txt
+
+git checkout -- octocat.txt
+
+git rm '*.txt'
+git commit -am <file> <'message'> -> Adds and commits in one step.
+git checkout -b admin -> creates and checks out branch
+
+Recovery codes are located on G:\downloads\github
+
+https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/
+Add local repo to remote auto-price to new-price
+git init
+git add .
+git commit -m "First commit"
+git remote add origin https://github.com/tonkajuris/car-price.git
+git remote -v (verifies the new remote repository url)
+git push origin master
