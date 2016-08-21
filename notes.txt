@@ -1,0 +1,40 @@
+Get '.myslides).load function out of .done of ajax call to GetCarPic.
+	This is why we are seeing 3 copies of the same console.log
+	
+What about (html, body).animate({scrolltop: $('.slideshow').offset().top }, 1000);
+
+function endAndStartTimer() {
+    window.clearTimeout(timer);
+    var timer;
+    //var millisecBeforeRedirect = 3000; 
+    timer = window.setTimeout(function(){alert('Hello!');},2000); 
+}
+		var testTimer;
+		testTimer = setTestTimer();
+		
+		clearTestTimer(testTimer);
+		
+	var setTestTimer = (function () {
+		console.log('initializing function');
+		return function(res) {
+			console.log('value of res ' + res);
+			if (typeof res !== 'undefined'){
+				console.log('clear timeout with ' + res);
+				window.clearTimeout(res);
+			}else{
+				console.log('setting Timer!!!');
+				console.log('testTimer type before setting timeout: ' + res);
+				testTimer = window.setTimeout(function () {
+					setTestTimer();
+				}, 3000);
+				console.log('res type after setting timeout: ' + res);
+				console.log('returning res');				
+				return testTimer;
+			}
+		};
+	})();
+
+	var clearTestTimer = function (winid) {
+		console.log('calling set from clear with winid = ' + winid);
+		setTestTimer(winid);
+	};
