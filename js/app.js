@@ -43,6 +43,14 @@ $(function () {
 		return styles;
 	};
 
+	var clearSlideShow = function(){
+		clearTimer(timer);
+		slideIndex = 1;
+		carouselIndex = 0;
+		$.each(document.getElementsByClassName("mySlides"), function(key, value){
+			value.src = ''; 
+		});
+	};
 	// BACKGROUND IMAGE HEIGHT
 	var windowHeight = $(window).height();
 	$('body').css('min-height', windowHeight);
@@ -79,7 +87,7 @@ $(function () {
 	$('#make').change(function () {
 		// console.log('calling stop');
 		// timer(0);
-		clearTimer(timer);
+		clearSlideShow();
 		$('.warning').slideUp(200);
 		// Removes previous car models & years if a make had been previously selected 
 		$('#model option').slice(1).remove();
@@ -211,7 +219,14 @@ $(function () {
 		// 	console.log('Got length');
 		// }
 		// Get image of car selected
+		$(".mySlides").unbind().load();
 		getCarPic(styleId);
+		$('.mySlides').load(function () {
+			console.log('image index: ' + carouselIndex);
+			$('.gif, .gif-background').fadeOut(500);
+			$('.car-result').slideDown(500);
+			// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
+		});
 		fillElements(getPhotoData());
 		timer = setTimer();
 		// console.log('call timer');
@@ -256,29 +271,37 @@ $(function () {
 				}, this);
 				var photoData = JSON.stringify(photos);
 				window.localStorage.setItem('photos', photoData);
-				$('.mySlides').load(function () {
-					console.log('CarouselIndex: ' + carouselIndex);
-					$('.gif, .gif-background').fadeOut(500);
-					$('.car-result').slideDown(500);
-					// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
-				});
+				// $('.mySlides').load(function () {
+				// 	console.log('CarouselIndex: ' + carouselIndex);
+				// 	$('.gif, .gif-background').fadeOut(500);
+				// 	$('.car-result').slideDown(500);
+				// 	// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
+				// });
 			});
 	};
 
 	//Slideshow
 	var fillElements = function (photos) {
 		console.log('Inside fillElements');
-		var i;
-		var x = document.getElementsByClassName("mySlides");
+		// var i;
+		// var x = document.getElementsByClassName("mySlides");
 		// console.log(photoData);
-		for (i = 0; i < x.length; i++) {
-			if (carouselIndex > photos.length - 1) {
+		$.each(document.getElementsByClassName("mySlides"), function(key, value){
+			if (carouselIndex > photos.length){
 				carouselIndex = 0;
 			}
-			x[i].src = 'http://media.ed.edmunds-media.com' + photos[carouselIndex];
-			console.log('loaded element # ' + i);
-			carouselIndex++;
-		}
+			value.src = 'http://media.ed.edmunds-media.com' + photos[carouselIndex];
+			console.log("file: " + value.src);
+			carouselIndex++; 
+		});
+		// for (i = 0; i < x.length; i++) {
+		// 	if (carouselIndex > photos.length - 1) {
+		// 		carouselIndex = 0;
+		// 	}
+		// 	x[i].src = 'http://media.ed.edmunds-media.com' + photos[carouselIndex];
+		// 	console.log('loaded element # ' + i);
+		// 	carouselIndex++;
+		// }
 	};
 
 	// var setTestTimer = (function () {
