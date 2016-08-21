@@ -8,7 +8,7 @@ function endAndStartTimer() {
     var timer;
     //var millisecBeforeRedirect = 3000; 
     timer = window.setTimeout(function(){alert('Hello!');},2000); 
-}
+}s
 		var testTimer;
 		testTimer = setTestTimer();
 		
