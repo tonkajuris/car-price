@@ -48,9 +48,13 @@ $(function () {
 		slideIndex = 1;
 		carouselIndex = 0;
 		// window.localStorage.clear();
+
 		$.each(document.getElementsByClassName("mySlides"), function(key, value){
-			value.src = null; 
+			console.log(value.src);
+			value.src = ''; 
 		});
+		
+		$('.mySlides').unbind().load();
 	};
 	// BACKGROUND IMAGE HEIGHT
 	var windowHeight = $(window).height();
@@ -59,7 +63,7 @@ $(function () {
 	// INITIAL AJAX CALL FOR CAR DATA
 	var request = {
 		fmt: 'json',
-		api_key: 'XXX'
+		api_key: 'fk5fszh84rrtvy5kz3jj9pey'
 	};
 	// Ajax Call to Edmunds.com API	
 	$.ajax({
@@ -103,9 +107,11 @@ $(function () {
 		// List Models in "Select Model" dropdown
 		var carMake = makeSelection();
 		var carData = getCarData();
-		$.each(carData.makes[carMake].models, function (i, model) {
-			$('#model').append('<option value="' + i + '">' + model.name + '</option>');
-		});
+		if (carData){
+			$.each(carData.makes[carMake].models, function (i, model) {
+				$('#model').append('<option value="' + i + '">' + model.name + '</option>');
+			});
+		}
 	});
 
 	// SELECT MODEL
@@ -169,7 +175,7 @@ $(function () {
 
 		var request = {
 			fmt: 'json',
-			api_key: 'XXX'
+			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
@@ -220,7 +226,6 @@ $(function () {
 		// 	console.log('Got length');
 		// }
 		// Get image of car selected
-		$('.mySlides').unbind().load();
 		getCarPic(styleId);
 		// $('.mySlides').load(function () {
 		// 	console.log('image index: ' + carouselIndex);
@@ -251,7 +256,7 @@ $(function () {
 			styleId: Id,
 			fmt: 'json',
 			comparator: 'simple',
-			api_key: 'XXX'
+			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
@@ -298,7 +303,7 @@ $(function () {
 				}
 			}
 			if (photos === null || typeof photos === 'undefined'){
-				console.log('No picture available for ' + photos[carouselIndex].src);
+				console.log('No picture available for photos');
 			}else{
 				if (typeof photos[carouselIndex] === 'undefined'){
 					console.log('photos[carouselIndex] is undefined');
@@ -419,7 +424,7 @@ $(function () {
 			mileage: mileage,
 			zip: zip,
 			fmt: 'json',
-			api_key: 'XXX'
+			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
