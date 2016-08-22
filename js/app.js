@@ -47,8 +47,9 @@ $(function () {
 		clearTimer(timer);
 		slideIndex = 1;
 		carouselIndex = 0;
+		// window.localStorage.clear();
 		$.each(document.getElementsByClassName("mySlides"), function(key, value){
-			value.src = ''; 
+			value.src = null; 
 		});
 	};
 	// BACKGROUND IMAGE HEIGHT
@@ -58,7 +59,7 @@ $(function () {
 	// INITIAL AJAX CALL FOR CAR DATA
 	var request = {
 		fmt: 'json',
-		api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+		api_key: 'XXX'
 	};
 	// Ajax Call to Edmunds.com API	
 	$.ajax({
@@ -168,7 +169,7 @@ $(function () {
 
 		var request = {
 			fmt: 'json',
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+			api_key: 'XXX'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
@@ -219,16 +220,17 @@ $(function () {
 		// 	console.log('Got length');
 		// }
 		// Get image of car selected
-		$(".mySlides").unbind().load();
+		$('.mySlides').unbind().load();
 		getCarPic(styleId);
-		$('.mySlides').load(function () {
-			console.log('image index: ' + carouselIndex);
-			$('.gif, .gif-background').fadeOut(500);
-			$('.car-result').slideDown(500);
-			// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
-		});
+		// $('.mySlides').load(function () {
+		// 	console.log('image index: ' + carouselIndex);
+		// 	$('.gif, .gif-background').fadeOut(500);
+		// 	$('.car-result').slideDown(500);
+		// 	// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
+		// });
+		console.log('calling filleElements() from startappraise button');
 		fillElements(getPhotoData());
-		timer = setTimer();
+		console.log('calling setTimer()');
 		// console.log('call timer');
 		// timer();
 		// console.log('called timer');
@@ -249,7 +251,7 @@ $(function () {
 			styleId: Id,
 			fmt: 'json',
 			comparator: 'simple',
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+			api_key: 'XXX'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
@@ -271,12 +273,14 @@ $(function () {
 				}, this);
 				var photoData = JSON.stringify(photos);
 				window.localStorage.setItem('photos', photoData);
-				// $('.mySlides').load(function () {
-				// 	console.log('CarouselIndex: ' + carouselIndex);
-				// 	$('.gif, .gif-background').fadeOut(500);
-				// 	$('.car-result').slideDown(500);
-				// 	// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
-				// });
+				timer = setTimer();
+				$('.mySlides').load(function () {
+					//Doesn't matter if outside of done and called before but after this function.
+					console.log('CarouselIndex: ' + carouselIndex);
+					$('.gif, .gif-background').fadeOut(500);
+					$('.car-result').slideDown(500);
+					// $('html, body').animate({scrollTop: $('.slideshow').offset().top }, 1000);			
+				});
 			});
 	};
 
@@ -287,12 +291,24 @@ $(function () {
 		// var x = document.getElementsByClassName("mySlides");
 		// console.log(photoData);
 		$.each(document.getElementsByClassName("mySlides"), function(key, value){
-			if (carouselIndex > photos.length){
-				carouselIndex = 0;
+			if (photos !== null) {
+				console.log("Photos length = " + photos.length);
+				if (carouselIndex >= photos.length){
+					carouselIndex = 0;
+				}
 			}
-			value.src = 'http://media.ed.edmunds-media.com' + photos[carouselIndex];
-			console.log("file: " + value.src);
-			carouselIndex++; 
+			if (photos === null || typeof photos === 'undefined'){
+				console.log('No picture available for ' + photos[carouselIndex].src);
+			}else{
+				if (typeof photos[carouselIndex] === 'undefined'){
+					console.log('photos[carouselIndex] is undefined');
+				}else{
+					console.log('Getting picture with carouselIndex = ' + carouselIndex);
+					value.src = 'http://media.ed.edmunds-media.com' + photos[carouselIndex];
+					console.log("file: " + value.src);
+					carouselIndex++;
+				} 
+			}
 		});
 		// for (i = 0; i < x.length; i++) {
 		// 	if (carouselIndex > photos.length - 1) {
@@ -330,10 +346,8 @@ $(function () {
 	// };
 
 	var setTimer = (function () {
-		console.log('initializing setTimer');
-		// console.log(carouselIndex);
 		return function(res) {
-			console.log('value of res ' + res);
+			// console.log('value of res ' + res);
 			if (typeof res !== 'undefined'){
 				console.log('clear timeout with ' + res);
 				window.clearTimeout(res);
@@ -344,15 +358,25 @@ $(function () {
 					x[i].style.display = "none";
 				}
 				slideIndex++;
+				console.log('slideIndex = ' + slideIndex);
+				console.log('myslides by class name length = ' + x.length);
 				if (slideIndex > x.length) {
+					console.log('setting slideIndex = 1');
 					slideIndex = 1;
+					console.log('calling filleElements() from inside setTimer slideIndex > x.length');
 					fillElements(getPhotoData());
 				}
 				x[slideIndex - 1].style.display = "block";
-				// timer = window.setTimeout(setTimer(), 3000); // Change image every 2 seconds
-				timer = window.setTimeout(function(){
-						setTimer();
-				}, 5000);
+				var photos = getPhotoData();
+				if (!photos.length){
+					console.log('photos has not length type = ' + typeof photos);
+					console.log('There are not phots available');
+				}else{
+					timer = window.setTimeout(function(){
+							setTimer();
+					}, 5000);
+				}
+
 				return timer;
 			}
 		};
@@ -395,7 +419,7 @@ $(function () {
 			mileage: mileage,
 			zip: zip,
 			fmt: 'json',
-			api_key: 'fk5fszh84rrtvy5kz3jj9pey'
+			api_key: 'XXX'
 		};
 		// Ajax Call to Edmunds.com API
 		$.ajax({
